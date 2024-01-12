@@ -1,3 +1,6 @@
 import Elysia from 'elysia'
 
-export const routes = new Elysia().get('/', () => 'Hello Elysia')
+import { helloWorld } from './hello-world'
+import { registerCustomer } from './register-customer'
+
+export const routes = new Elysia().use(helloWorld).use(registerCustomer)
