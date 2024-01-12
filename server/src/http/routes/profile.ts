@@ -1,9 +1,10 @@
 import Elysia from 'elysia'
-import { authentication } from '../authentication'
-import { db } from '~/db/connection'
-import { users } from '~/db/schema'
 import { eq } from 'drizzle-orm'
 
+import { db } from '~/db/connection'
+import { users } from '~/db/schema'
+
+import { authentication } from '../authentication'
 import { NotFoundError } from '../errors/not-found-error'
 
 export const profile = new Elysia()
