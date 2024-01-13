@@ -1,7 +1,5 @@
-import Elysia from 'elysia'
+import Elysia, { t } from 'elysia'
 import * as argon2 from 'argon2'
-
-import { z } from 'zod'
 import { eq } from 'drizzle-orm'
 
 import { db } from '~/db/connection'
@@ -10,15 +8,10 @@ import { users } from '~/db/schema'
 import { authentication } from '../authentication'
 import { UnauthorizedError } from '../errors/unauthorized-error'
 
-const signInBodySchema = z.object({
-  password: z.string(),
-  email: z.string().email(),
-})
-
-export const signIn = new Elysia()
-  .use(authentication)
-  .post('/sign-in', async ({ body, signUser }) => {
-    const { email, password } = signInBodySchema.parse(body)
+export const signIn = new Elysia().use(authentication).post(
+  '/sign-in',
+  async ({ body, signUser }) => {
+    const { email, password } = body
 
     const result = await db
       .select({ passwordHash: users.passwordHash, id: users.id })
@@ -37,4 +30,11 @@ export const signIn = new Elysia()
     } else {
       throw new UnauthorizedError('Email or password is incorrect.')
     }
-  })
+  },
+  {
+    body: t.Object({
+      password: t.String(),
+      email: t.String({ format: 'email', default: null }),
+    }),
+  }
+)
