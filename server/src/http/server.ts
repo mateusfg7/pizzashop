@@ -1,11 +1,13 @@
 import { Elysia } from 'elysia'
 import { logger } from '@grotto/logysia'
+import { swagger } from '@elysiajs/swagger'
 
 import { NotFoundError } from './errors/not-found-error'
 import { routes } from './routes'
 
 const app = new Elysia()
   .use(logger({ logIP: true }))
+  .use(swagger())
   .error({
     NOT_FOUND: NotFoundError,
   })
