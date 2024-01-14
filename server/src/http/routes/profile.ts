@@ -1,4 +1,4 @@
-import Elysia from 'elysia'
+import Elysia, { t } from 'elysia'
 import { eq } from 'drizzle-orm'
 
 import { db } from '~/db/connection'
@@ -6,10 +6,11 @@ import { users } from '~/db/schema'
 
 import { authentication } from '../authentication'
 import { NotFoundError } from '../errors/not-found-error'
+import { userModel } from '../models/user-model'
 
-export const profile = new Elysia()
-  .use(authentication)
-  .get('/profile', async ({ getCurrentUser }) => {
+export const profile = new Elysia().use(authentication).get(
+  '/profile',
+  async ({ getCurrentUser }) => {
     const currentUser = await getCurrentUser()
 
     const user = await db.query.users.findFirst({
@@ -29,4 +30,8 @@ export const profile = new Elysia()
     }
 
     return user
-  })
+  },
+  {
+    response: userModel,
+  }
+)

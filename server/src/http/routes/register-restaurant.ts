@@ -7,14 +7,22 @@ import { restaurants, users } from '~/db/schema'
 const bodySchema = t.Object({
   restaurantName: t.String(),
   restaurantDescription: t.String(),
-  managerName: t.String(),
+  managerName: t.String({ minLength: 2 }),
   phone: t.String(),
   email: t.String({
     format: 'email',
-    error: 'Invalid email :(',
     default: null,
   }),
   managerPassword: t.String({ minLength: 8 }),
+})
+
+const restaurantModel = t.Object({
+  id: t.String(),
+  name: t.String(),
+  description: t.String(),
+  managerId: t.Union([t.String(), t.Null()]),
+  createdAt: t.Union([t.Date(), t.Null()]),
+  updatedAt: t.Union([t.Date(), t.Null()]),
 })
 
 export const registerRestaurant = new Elysia().post(
@@ -57,5 +65,6 @@ export const registerRestaurant = new Elysia().post(
   },
   {
     body: bodySchema,
+    response: restaurantModel,
   }
 )
