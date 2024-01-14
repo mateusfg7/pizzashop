@@ -6,7 +6,7 @@ _Inspired on [this project](https://github.com/rocketseat-education/pizzashop-ap
 - [x] it should be able to register as a new customer
 - [x] it should be able to sign in as a customer
 - [x] it should be able to retrieve profile data
-- [ ] it should be able to register a new restaurant
+- [x] it should be able to register a new restaurant
 - [ ] it should be able to sign in as a restaurant manager
 - [ ] it should be able to crete an order to the restaurant
 - [ ] it should be able to manage the restaurant menu
