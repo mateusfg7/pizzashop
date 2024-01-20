@@ -7,7 +7,6 @@ import { Input } from '~/components/ui/input'
 import { Button } from '~/components/ui/button'
 
 import { AuthFormSchema, AuthForm } from '../_lib/form-utils'
-import { formatBrPhoneNumber } from '../_lib/format-br-phone-number'
 
 const inputVariant = cva('text-lg py-5', {
   variants: {
