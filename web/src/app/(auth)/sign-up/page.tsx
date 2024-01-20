@@ -13,8 +13,11 @@ import {
   registerFormSchema,
 } from './_lib/form-utils'
 
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
+
 export default function Page() {
-  const [stage, setStage] = useState<'register' | 'auth'>('register')
+  const [stage, setStage] = useState<'register' | 'auth'>('auth')
+  const [isLoading, setIsLoading] = useState(false)
 
   const registerForm = useForm<RegisterFormSchema>({
     resolver: zodResolver(registerFormSchema),
@@ -26,7 +29,7 @@ export default function Page() {
 
   const nextStage = () => setStage('auth')
 
-  function submitForms() {
+  async function submitForms() {
     console.log(`
     Restaurante: ${registerForm.getValues('restaurantName')}
     Gerencia: ${registerForm.getValues('managerName')}
@@ -35,7 +38,9 @@ export default function Page() {
     Senha: ${authForm.getValues('password')}
     `)
 
-    alert('OK')
+    setIsLoading(true)
+    await sleep(3000)
+    setIsLoading(false)
   }
 
   return (
@@ -52,6 +57,7 @@ export default function Page() {
       )}
       {stage === 'auth' && (
         <AuthForm
+          isLoading={isLoading}
           form={authForm}
           onSubmit={submitForms}
           goBack={() => setStage('register')}

@@ -1,4 +1,4 @@
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Loader, Loader2 } from 'lucide-react'
 
 import { Label } from '~/components/ui/label'
 import { Input } from '~/components/ui/input'
@@ -12,9 +12,10 @@ import { ErrorMessage } from './error-message'
 type Props = {
   form: AuthForm
   onSubmit: (schema: AuthFormSchema) => void
+  isLoading: boolean
   goBack: () => void
 }
-export function AuthForm({ form, onSubmit, goBack }: Props) {
+export function AuthForm({ form, onSubmit, goBack, isLoading }: Props) {
   const errors = form.formState.errors
 
   return (
@@ -56,18 +57,28 @@ export function AuthForm({ form, onSubmit, goBack }: Props) {
           <ErrorMessage error={errors.password} />
         </div>
         <div>
-          <Button type='submit' className='py-5 text-lg leading-none w-full'>
-            <span>Finalizar Cadastro</span>
-          </Button>
           <Button
-            onClick={goBack}
-            type='button'
-            variant='link'
-            className='space-x-1 p-0'
+            type='submit'
+            className='py-5 text-lg leading-none w-full '
+            disabled={isLoading}
           >
-            <ArrowLeft size='1em' className='text-sm' />
-            <span className='text-sm'>Voltar</span>
+            {isLoading ? (
+              <Loader2 className='animate-spin' />
+            ) : (
+              <span>Finalizar Cadastro</span>
+            )}
           </Button>
+          {!isLoading && (
+            <Button
+              onClick={goBack}
+              type='button'
+              variant='link'
+              className='space-x-1 p-0'
+            >
+              <ArrowLeft size='1em' className='text-sm' />
+              <span className='text-sm'>Voltar</span>
+            </Button>
+          )}
         </div>
       </form>
     </div>
