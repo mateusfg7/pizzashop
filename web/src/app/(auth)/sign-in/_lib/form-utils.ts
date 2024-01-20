@@ -12,3 +12,10 @@ export const registerFormSchema = z.object({
 })
 export type RegisterFormSchema = z.infer<typeof registerFormSchema>
 export type RegisterForm = UseFormReturn<RegisterFormSchema, any, undefined>
+
+export const authFormSchema = z.object({
+  email: z.string().email('Email inválido'),
+  password: z.string().min(8, 'A senha deve ter no mínimo 8 caracteres'),
+})
+export type AuthFormSchema = z.infer<typeof authFormSchema>
+export type AuthForm = UseFormReturn<AuthFormSchema, any, undefined>
