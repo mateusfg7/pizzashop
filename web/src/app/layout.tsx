@@ -3,6 +3,7 @@ import { Inter as FontSans } from 'next/font/google'
 
 import { cn } from '~/lib/utils'
 import { ThemeProvider } from '~/components/theme-provider'
+import { ThemeToggle } from '~/components/theme-toggle'
 
 import './globals.css'
 
@@ -19,7 +20,10 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body
-        className={cn('min-h-screen font-sans antialiased', fontSans.variable)}
+        className={cn(
+          'min-h-screen font-sans antialiased bg-white dark:bg-neutral-950',
+          fontSans.variable
+        )}
       >
         <ThemeProvider
           attribute='class'
@@ -28,6 +32,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
+          <div className='fixed bottom-3 right-3'>
+            <ThemeToggle />
+          </div>
         </ThemeProvider>
       </body>
     </html>
