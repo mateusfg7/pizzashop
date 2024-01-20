@@ -1,5 +1,3 @@
-import { FieldError } from 'react-hook-form'
-import { cva } from 'class-variance-authority'
 import { ArrowRight } from 'lucide-react'
 
 import { Label } from '~/components/ui/label'
@@ -9,19 +7,8 @@ import { Button } from '~/components/ui/button'
 import { RegisterForm, RegisterFormSchema } from '../_lib/form-utils'
 import { formatBrPhoneNumber } from '../_lib/format-br-phone-number'
 
-const inputVariant = cva('text-lg py-5', {
-  variants: {
-    error: {
-      true: /*tw:*/ 'focus-visible:ring-red-500',
-    },
-  },
-})
-
-const ErrorMessage = ({ error }: { error: FieldError | undefined }) => {
-  if (!error) return
-
-  return <span className='text-sm flex text-red-600'>{error.message}</span>
-}
+import { ErrorMessage } from './error-message'
+import { inputStyles } from './input-styles'
 
 type Props = {
   form: RegisterForm
@@ -41,7 +28,7 @@ export function RegisterForm({ form, onSubmit }: Props) {
             Nome do estabelecimento
           </Label>
           <Input
-            className={inputVariant({
+            className={inputStyles({
               error: errors.restaurantName !== undefined,
             })}
             id='restaurant-name'
@@ -55,7 +42,7 @@ export function RegisterForm({ form, onSubmit }: Props) {
             Seu nome
           </Label>
           <Input
-            className={inputVariant({
+            className={inputStyles({
               error: errors.managerName !== undefined,
             })}
             id='manager-name'
@@ -70,7 +57,7 @@ export function RegisterForm({ form, onSubmit }: Props) {
           </Label>
           <Input
             {...form.register('phone')}
-            className={inputVariant({
+            className={inputStyles({
               error: errors.phone !== undefined,
             })}
             id='phone'

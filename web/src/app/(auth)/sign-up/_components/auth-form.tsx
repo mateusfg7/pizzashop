@@ -1,6 +1,4 @@
-import { FieldError } from 'react-hook-form'
-import { cva } from 'class-variance-authority'
-import { ArrowLeft, ArrowRight } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 
 import { Label } from '~/components/ui/label'
 import { Input } from '~/components/ui/input'
@@ -8,19 +6,8 @@ import { Button } from '~/components/ui/button'
 
 import { AuthFormSchema, AuthForm } from '../_lib/form-utils'
 
-const inputVariant = cva('text-lg py-5', {
-  variants: {
-    error: {
-      true: /*tw:*/ 'focus-visible:ring-red-500',
-    },
-  },
-})
-
-const ErrorMessage = ({ error }: { error: FieldError | undefined }) => {
-  if (!error) return
-
-  return <span className='text-sm flex text-red-600'>{error.message}</span>
-}
+import { inputStyles } from './input-styles'
+import { ErrorMessage } from './error-message'
 
 type Props = {
   form: AuthForm
@@ -41,7 +28,7 @@ export function AuthForm({ form, onSubmit, goBack }: Props) {
             Seu email
           </Label>
           <Input
-            className={inputVariant({
+            className={inputStyles({
               error: errors.email !== undefined,
             })}
             id='email'
@@ -59,7 +46,7 @@ export function AuthForm({ form, onSubmit, goBack }: Props) {
             Senha segura
           </Label>
           <Input
-            className={inputVariant({
+            className={inputStyles({
               error: errors.password !== undefined,
             })}
             id='password'
