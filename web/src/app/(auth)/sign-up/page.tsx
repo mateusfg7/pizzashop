@@ -1,9 +1,11 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
+import { toast } from 'sonner'
 
 import { Label } from '~/components/ui/label'
 import { Input } from '~/components/ui/input'
@@ -23,16 +25,32 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 export default function Page() {
   const [isLoading, setIsLoading] = useState(false)
 
+  const router = useRouter()
+
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
   })
   const errors = form.formState.errors
 
-  async function submitRestaurant(values: FormSchema) {
+  async function handleRegisterRestaurant(values: FormSchema) {
     console.log(values)
 
     setIsLoading(true)
     await sleep(3000)
+      .then(() => {
+        toast.success('Restaurante cadastrado!', {
+          description: '',
+          action: {
+            label: 'Login',
+            onClick: () => {
+              router.push('/sign-in')
+            },
+          },
+        })
+      })
+      .catch((e) => {
+        toast.error('Erro ao cadastrar restaurante.')
+      })
     setIsLoading(false)
   }
 
@@ -40,7 +58,7 @@ export default function Page() {
     <div className='space-y-11 w-96 pb-32 h-fit'>
       <Title />
       <form
-        onSubmit={form.handleSubmit(submitRestaurant)}
+        onSubmit={form.handleSubmit(handleRegisterRestaurant)}
         className='space-y-9 text-lg'
       >
         <FormSection title='Estabelecimento'>
