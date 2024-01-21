@@ -3,40 +3,33 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Loader2 } from 'lucide-react'
 
-import { RegisterForm } from './_components/register-form'
-import { AuthForm } from './_components/auth-form'
-import {
-  AuthFormSchema,
-  RegisterFormSchema,
-  authFormSchema,
-  registerFormSchema,
-} from './_lib/form-utils'
+import { Label } from '~/components/ui/label'
+import { Input } from '~/components/ui/input'
+import { Textarea } from '~/components/ui/textarea'
+import { Button } from '~/components/ui/button'
+
+import { FormSchema, formSchema } from './_lib/form-utils'
+import { formatBrPhoneNumber } from './_lib/format-br-phone-number'
+
+import { ErrorMessage } from './_components/error-message'
+import { inputStyles } from './_components/input-styles'
+import { Title } from './_components/title'
+import { FormSection } from './_components/form-section'
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
 export default function Page() {
-  const [stage, setStage] = useState<'register' | 'auth'>('auth')
   const [isLoading, setIsLoading] = useState(false)
 
-  const registerForm = useForm<RegisterFormSchema>({
-    resolver: zodResolver(registerFormSchema),
+  const form = useForm<FormSchema>({
+    resolver: zodResolver(formSchema),
   })
+  const errors = form.formState.errors
 
-  const authForm = useForm<AuthFormSchema>({
-    resolver: zodResolver(authFormSchema),
-  })
-
-  const nextStage = () => setStage('auth')
-
-  async function submitForms() {
-    console.log(`
-    Restaurante: ${registerForm.getValues('restaurantName')}
-    Gerencia: ${registerForm.getValues('managerName')}
-    Telefone: ${registerForm.getValues('phone')}
-    Email: ${authForm.getValues('email')}
-    Senha: ${authForm.getValues('password')}
-    `)
+  async function submitRestaurant(values: FormSchema) {
+    console.log(values)
 
     setIsLoading(true)
     await sleep(3000)
@@ -44,25 +37,121 @@ export default function Page() {
   }
 
   return (
-    <div className='space-y-8 w-96'>
-      <div className='space-y-2 text-center'>
-        <h1 className='text-2xl font-bold'>Criar conta grátis</h1>
-        <span className='text-neutral-700 dark:text-neutral-400 text-sm'>
-          Seja um parceiro <span className='font-bold'>pizza.shop</span> e
-          comece suas vendas!
-        </span>
-      </div>
-      {stage === 'register' && (
-        <RegisterForm form={registerForm} onSubmit={nextStage} />
-      )}
-      {stage === 'auth' && (
-        <AuthForm
-          isLoading={isLoading}
-          form={authForm}
-          onSubmit={submitForms}
-          goBack={() => setStage('register')}
-        />
-      )}
+    <div className='space-y-11 w-96 pb-32 h-fit'>
+      <Title />
+      <form
+        onSubmit={form.handleSubmit(submitRestaurant)}
+        className='space-y-9 text-lg'
+      >
+        <FormSection title='Estabelecimento'>
+          <div className='space-y-2'>
+            <Label className='text-lg' htmlFor='restaurant-name'>
+              Nome do estabelecimento
+            </Label>
+            <Input
+              className={inputStyles({
+                error: errors.restaurantName !== undefined,
+              })}
+              id='restaurant-name'
+              type='text'
+              {...form.register('restaurantName')}
+            />
+            <ErrorMessage error={errors.restaurantName} />
+          </div>
+          <div className='space-y-2'>
+            <Label className='text-lg' htmlFor='restaurant-description'>
+              Descrição do estabelecimento
+            </Label>
+            <Textarea
+              className={inputStyles({
+                error: errors.restaurantDescription !== undefined,
+                class: /*tw:*/ 'py-2',
+              })}
+              id='restaurant-description'
+              {...form.register('restaurantDescription')}
+            />
+            <ErrorMessage error={errors.restaurantDescription} />
+          </div>
+        </FormSection>
+        <FormSection title='Administrador'>
+          <div className='space-y-2'>
+            <Label className='text-lg' htmlFor='manager-name'>
+              Seu nome
+            </Label>
+            <Input
+              className={inputStyles({
+                error: errors.managerName !== undefined,
+              })}
+              id='manager-name'
+              type='text'
+              {...form.register('managerName')}
+            />
+            <ErrorMessage error={errors.managerName} />
+          </div>
+          <div className='space-y-2'>
+            <Label className='text-lg' htmlFor='phone'>
+              Telefone
+            </Label>
+            <Input
+              {...form.register('phone')}
+              className={inputStyles({
+                error: errors.phone !== undefined,
+              })}
+              id='phone'
+              type='tel'
+              placeholder='(99) 9999-9999'
+              onChange={(e) => {
+                if (e.target.value.length === 15) form.setError('phone', {})
+                form.setValue('phone', formatBrPhoneNumber(e.target.value))
+              }}
+            />
+            <ErrorMessage error={errors.phone} />
+          </div>
+          <div className='space-y-2'>
+            <Label className='text-lg' htmlFor='email'>
+              Seu email
+            </Label>
+            <Input
+              className={inputStyles({
+                error: errors.email !== undefined,
+              })}
+              id='email'
+              type='email'
+              autoCapitalize='none'
+              autoComplete='email'
+              autoCorrect='off'
+              placeholder='contato@email.com'
+              {...form.register('email')}
+            />
+            <ErrorMessage error={errors.email} />
+          </div>
+          <div className='space-y-2'>
+            <Label className='text-lg' htmlFor='password'>
+              Senha segura
+            </Label>
+            <Input
+              className={inputStyles({
+                error: errors.password !== undefined,
+              })}
+              id='password'
+              type='password'
+              {...form.register('password')}
+            />
+            <ErrorMessage error={errors.password} />
+          </div>
+        </FormSection>
+        <Button
+          type='submit'
+          className='py-5 text-lg leading-none w-full '
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <Loader2 className='animate-spin' />
+          ) : (
+            <span>Finalizar Cadastro</span>
+          )}
+        </Button>
+      </form>
     </div>
   )
 }

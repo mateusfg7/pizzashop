@@ -10,7 +10,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
           Painel do parceiro &copy; pizza.shop - {new Date().getFullYear()}
         </footer>
       </div>
-      <div className='flex items-center justify-center flex-auto p-10'>
+      <div className='flex justify-center flex-auto p-10 pt-20 overflow-y-scroll'>
         {children}
       </div>
     </div>
