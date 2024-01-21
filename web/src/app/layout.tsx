@@ -3,7 +3,6 @@ import { Inter as FontSans } from 'next/font/google'
 
 import { cn } from '~/lib/utils'
 import { ThemeProvider } from '~/components/theme-provider'
-import { ThemeToggle } from '~/components/theme-toggle'
 import { Toaster } from '~/components/ui/sonner'
 
 import './globals.css'
@@ -33,9 +32,6 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
-          <div className='fixed bottom-3 right-3'>
-            <ThemeToggle />
-          </div>
           <Toaster />
         </ThemeProvider>
       </body>

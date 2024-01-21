@@ -12,7 +12,7 @@ import { Input } from '~/components/ui/input'
 import { Textarea } from '~/components/ui/textarea'
 import { Button } from '~/components/ui/button'
 
-import { FormSchema, formSchema } from './_lib/form-utils'
+import { FormSchema, formSchema } from './_lib/form-schema'
 import { formatBrPhoneNumber } from './_lib/format-br-phone-number'
 
 import { ErrorMessage } from './_components/error-message'
@@ -55,7 +55,7 @@ export default function Page() {
   }
 
   return (
-    <div className='space-y-11 w-96 pb-32 h-fit'>
+    <div className='space-y-11 w-96 pt-10 pb-32 h-fit'>
       <Title />
       <form
         onSubmit={form.handleSubmit(handleRegisterRestaurant)}
@@ -166,7 +166,7 @@ export default function Page() {
           {isLoading ? (
             <Loader2 className='animate-spin' />
           ) : (
-            <span>Finalizar Cadastro</span>
+            <span>Finalizar cadastro</span>
           )}
         </Button>
       </form>
