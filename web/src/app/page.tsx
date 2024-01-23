@@ -1,5 +1,6 @@
 'use client'
 
+import { Loader2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { api } from '~/lib/axios'
 
@@ -24,12 +25,16 @@ export default function Home() {
     getData()
   }, [])
 
-  if (!data)
+  if (!data) {
     return (
       <main className='flex min-h-screen flex-col items-center justify-between p-24'>
-        <h1>Loading data...</h1>
+        <h1 className='flex gap-2 items-center text-xl'>
+          <Loader2 className='animate-spin' />
+          <span>Carregando dados</span>
+        </h1>
       </main>
     )
+  }
 
   return (
     <main className='flex min-h-screen flex-col items-center p-24 space-y-10'>
