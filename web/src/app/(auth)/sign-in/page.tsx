@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 
 import { Label } from '~/components/ui/label'
 import { Input } from '~/components/ui/input'
@@ -15,10 +16,13 @@ import { FormSchema, formSchema } from './_lib/form-schema'
 import { ErrorMessage } from './_components/error-message'
 import { inputStyles } from './_components/input-styles'
 import { Title } from './_components/title'
+import { api } from '~/lib/axios'
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
 export default function Page() {
+  const router = useRouter()
+
   const [isLoading, setIsLoading] = useState(false)
 
   const form = useForm<FormSchema>({
@@ -27,12 +31,21 @@ export default function Page() {
   const errors = form.formState.errors
 
   async function handleRegisterRestaurant(values: FormSchema) {
-    console.log(values)
+    const { email, password } = values
 
     setIsLoading(true)
-    await sleep(3000)
-      .then(() => {
-        toast.success('Login realizado com sucesso!')
+    await api
+      .post('/sign-in', {
+        password,
+        email,
+      })
+      .then((result) => {
+        if (result.status === 200) {
+          toast.success('Login realizado com sucesso!')
+          router.push('/')
+        } else {
+          toast.error('Erro ao fazer login')
+        }
       })
       .catch((e) => {
         toast.error('Erro ao fazer login')
