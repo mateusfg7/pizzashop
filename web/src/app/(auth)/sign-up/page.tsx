@@ -38,6 +38,7 @@ export default function Page() {
     setIsLoading(true)
     await sleep(3000)
       .then(() => {
+        form.reset()
         toast.success('Restaurante cadastrado!', {
           description: '',
           action: {
