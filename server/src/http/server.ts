@@ -1,11 +1,28 @@
 import { Elysia } from 'elysia'
 import { logger } from '@grotto/logysia'
 import { swagger } from '@elysiajs/swagger'
+import { cors } from '@elysiajs/cors'
 
 import { NotFoundError } from './errors/not-found-error'
 import { routes } from './routes'
 
 const app = new Elysia()
+  .use(
+    cors({
+      credentials: true,
+      allowedHeaders: ['content-type'],
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
+      origin: (request): boolean => {
+        const origin = request.headers.get('origin')
+
+        if (!origin) {
+          return false
+        }
+
+        return true
+      },
+    })
+  )
   .use(logger({ logIP: true }))
   .use(swagger())
   .error({
