@@ -65,6 +65,8 @@ export const registerRestaurant = new Elysia().post(
   },
   {
     body: bodySchema,
-    response: restaurantModel,
+    response: {
+      201: restaurantModel,
+    },
   }
 )

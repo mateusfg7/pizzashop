@@ -6,6 +6,7 @@ import { users } from '~/db/schema'
 
 import { authentication } from '../authentication'
 import { NotFoundError } from '../errors/not-found-error'
+import { errorModel } from '../models/error-model'
 import { userModel } from '../models/user-model'
 
 export const profile = new Elysia().use(authentication).get(
@@ -32,6 +33,9 @@ export const profile = new Elysia().use(authentication).get(
     return user
   },
   {
-    response: userModel,
+    response: {
+      200: userModel,
+      404: errorModel,
+    },
   }
 )
