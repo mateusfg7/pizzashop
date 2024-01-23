@@ -4,7 +4,13 @@ import type { NextRequest } from 'next/server'
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  if (!pathname.startsWith('/sign-up') && !pathname.startsWith('/sign-in')) {
+  const isAuthenticated = request.cookies.get('auth') !== undefined
+
+  if (
+    !pathname.startsWith('/sign-up') &&
+    !pathname.startsWith('/sign-in') &&
+    !isAuthenticated
+  ) {
     return NextResponse.redirect(new URL('/sign-in', request.url))
   }
 }
