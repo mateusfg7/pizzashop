@@ -7,6 +7,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 
+import { api } from '~/lib/axios'
+
 import { Label } from '~/components/ui/label'
 import { Input } from '~/components/ui/input'
 import { Textarea } from '~/components/ui/textarea'
@@ -33,25 +35,46 @@ export default function Page() {
   const errors = form.formState.errors
 
   async function handleRegisterRestaurant(values: FormSchema) {
-    console.log(values)
+    const {
+      email,
+      managerName,
+      password,
+      phone,
+      restaurantDescription,
+      restaurantName,
+    } = values
 
     setIsLoading(true)
-    await sleep(3000)
-      .then(() => {
-        form.reset()
-        toast.success('Restaurante cadastrado!', {
-          description: '',
-          action: {
-            label: 'Login',
-            onClick: () => {
-              router.push('/sign-in')
-            },
-          },
-        })
+
+    await api
+      .post('/restaurants', {
+        restaurantName,
+        restaurantDescription,
+        managerName,
+        phone,
+        email,
+        managerPassword: password,
       })
-      .catch((e) => {
+      .then((result) => {
+        if (result.status === 201) {
+          form.reset()
+          toast.success('Restaurante cadastrado!', {
+            description: '',
+            action: {
+              label: 'Login',
+              onClick: () => {
+                router.push('/sign-in')
+              },
+            },
+          })
+        } else {
+          toast.error('Erro ao cadastrar restaurante.')
+        }
+      })
+      .catch(() => {
         toast.error('Erro ao cadastrar restaurante.')
       })
+
     setIsLoading(false)
   }
 
