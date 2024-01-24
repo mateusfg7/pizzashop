@@ -6,6 +6,7 @@ import { ThemeProvider } from '~/components/theme-provider'
 import { Toaster } from '~/components/ui/sonner'
 
 import './globals.css'
+import { QueryClientProvider } from '~/components/query-client-provider'
 
 export const fontSans = FontSans({
   subsets: ['latin'],
@@ -31,8 +32,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
-          <Toaster />
+          <QueryClientProvider>
+            {children}
+            <Toaster />
+          </QueryClientProvider>
         </ThemeProvider>
       </body>
     </html>
