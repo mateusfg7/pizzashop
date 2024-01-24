@@ -1,9 +1,7 @@
 import Elysia, { t } from 'elysia'
 import * as argon2 from 'argon2'
-import { eq } from 'drizzle-orm'
 
 import { db } from '~/db/connection'
-import { users } from '~/db/schema'
 
 import { authentication } from '../authentication'
 import { UnauthorizedError } from '../errors/unauthorized-error'
@@ -13,23 +11,43 @@ export const signIn = new Elysia().use(authentication).post(
   async ({ body, signUser }) => {
     const { email, password } = body
 
-    const result = await db
-      .select({ passwordHash: users.passwordHash, id: users.id })
-      .from(users)
-      .where(eq(users.email, email))
+    const result = await db.query.users.findFirst({
+      where(fields, { eq }) {
+        return eq(fields.email, email)
+      },
+    })
 
-    if (result.length < 1) {
+    if (!result) {
       throw new UnauthorizedError('Email or password is incorrect.')
     }
 
-    const passwordHash = result[0].passwordHash
+    const { passwordHash, role, id } = result
     const passwordIsCorrect = await argon2.verify(passwordHash, password)
 
-    if (passwordIsCorrect) {
-      await signUser({ sub: result[0].id })
-    } else {
+    if (!passwordIsCorrect) {
       throw new UnauthorizedError('Email or password is incorrect.')
     }
+
+    if (role !== 'manager') {
+      await signUser({ sub: result.id })
+      return
+    }
+
+    const restaurant = await db.query.restaurants.findFirst({
+      where(fields, { eq }) {
+        return eq(fields.managerId, id)
+      },
+      columns: {
+        id: true,
+      },
+    })
+
+    if (!restaurant) {
+      await signUser({ sub: result.id })
+      return
+    }
+
+    await signUser({ sub: result.id, restaurantId: restaurant.id })
   },
   {
     body: t.Object({
