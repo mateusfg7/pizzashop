@@ -6,6 +6,7 @@ import { signIn } from './sign-in'
 import { signOut } from './sign-out'
 import { profile } from './profile'
 import { registerRestaurant } from './register-restaurant'
+import { getManagedRestaurant } from './get-managed-restaurant'
 
 export const routes = new Elysia()
   .use(helloWorld)
@@ -14,3 +15,4 @@ export const routes = new Elysia()
   .use(signOut)
   .use(profile)
   .use(registerRestaurant)
+  .use(getManagedRestaurant)
