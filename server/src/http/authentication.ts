@@ -5,18 +5,24 @@ import jwt from '@elysiajs/jwt'
 import { env } from '~/env'
 
 import { UnauthorizedError } from './errors/unauthorized-error'
+import { NotAManagerError } from './errors/not-a-manager-error'
 
 const jwtPayloadSchema = t.Object({
   sub: t.String(),
+  restaurantId: t.Optional(t.String()),
 })
 
 export const authentication = new Elysia()
   .error({
     UNAUTHORIZED: UnauthorizedError,
+    NOT_A_MANAGER: NotAManagerError,
   })
   .onError(({ code, error, set }) => {
     switch (code) {
       case 'UNAUTHORIZED':
+        set.status = 401
+        return { code, message: error.message }
+      case 'NOT_A_MANAGER':
         set.status = 401
         return { code, message: error.message }
     }
@@ -49,6 +55,19 @@ export const authentication = new Elysia()
       },
       signOut: () => {
         removeCookie('auth')
+      },
+    }
+  })
+  .derive(({ getCurrentUser }) => {
+    return {
+      getManagedRestaurantId: async () => {
+        const { restaurantId } = await getCurrentUser()
+
+        if (!restaurantId) {
+          throw new NotAManagerError()
+        }
+
+        return restaurantId
       },
     }
   })
